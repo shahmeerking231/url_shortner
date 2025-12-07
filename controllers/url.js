@@ -19,12 +19,13 @@ async function generateNewShortURL(req, res) {
 async function redirectToURL(req,res){
     const shortId = req.params.shortId;
     const entry = await URL.findOneAndUpdate({
-        shortId
+        shortId: shortId
     }, {$push: {
         visitHistory: {
             timeStamp: Date.now()
         },
     }});
+    if(!entry) return res.status(404).json({ error: "Short URL not found" });
     res.redirect(entry.redirectURL);
 }
 
